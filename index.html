@@ -56,27 +56,85 @@
     <div class="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
         <div class="bg-white rounded-xl shadow-lg p-6">
             <h1 class="text-2xl font-bold text-gray-800 mb-2">Material Flow Analysis</h1>
-            <p class="text-gray-600 mb-6">This Sankey diagram visualizes the material flow and losses based on the
-                provided UML diagram. Flow widths are proportional to material quantity. All values are based on an
-                initial input of 100 units.</p>
 
-            <div class="mb-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                <label for="successRate" class="block text-sm font-medium text-gray-700">Adjust Part Success Rate
-                    (%):</label>
-                <div class="flex items-center mt-1">
-                    <input type="range" id="successRate" min="0" max="100" value="80"
-                        class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
-                    <span id="successRateValue" class="ml-4 font-semibold text-blue-700 w-12 text-center">80%</span>
-                </div>
-                <p class="text-xs text-gray-500 mt-1">Adjust the slider to see how the final product output and waste
-                    streams change based on the testing success rate.</p>
+            <p class="text-gray-600 mb-4">
+                This interactive tool is designed for Material Flow Analysis (MFA) of a manufacturing process that uses
+                both virgin and recycled materials. It helps visualize how different factors influence material
+                efficiency, waste generation, and the potential for a circular economy.
+            </p>
+            <div class="text-gray-600 mb-6 text-sm p-4 bg-gray-50 rounded-lg border">
+                <h3 class="font-semibold text-base text-gray-700 mb-2">How to Use This Tool</h3>
+                <ul class="list-disc list-inside space-y-1">
+                    <li><strong>Adjust Material Mix:</strong> In the 'Material Composition' box, set the initial ratio
+                        of 'Virgin Material' to 'Recycled Pellets'. The total will automatically balance to 100 units.
+                    </li>
+                    <li><strong>Control Process Parameters:</strong> Use the sliders to modify the 'Part Success Rate'
+                        (how many printed parts pass testing), 'Print Loss' (material wasted during the printing
+                        process), and 'Recycling Loss' (material lost when shredding failed parts).</li>
+                    <li><strong>Analyze the Flow:</strong> The Sankey diagram will instantly update. The width of each
+                        path is proportional to the amount of material. Hover over any flow to see the precise quantity.
+                    </li>
+                </ul>
             </div>
 
-            <div class="mt-4 text-xs text-gray-500 p-3 bg-gray-100 rounded-md">
-                <strong>Note on Circular Flow:</strong> To prevent rendering errors, the circular recycling loop
-                (Shredder → Recycled Pellets) has been broken. "Recycled Pellets (Input)" represents material from a
-                previous cycle, while "Recycled Pellets (Output)" represents the material recovered from this cycle,
-                which is ready for the next one.
+            <!-- All Input Controls -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <!-- Material Composition Inputs -->
+                <div class="p-4 bg-green-50 border border-green-200 rounded-lg">
+                    <label class="block text-sm font-medium text-gray-700 mb-2 font-bold">Input Material Composition
+                        (%)</label>
+                    <div class="flex items-center mt-2 space-x-4">
+                        <div class="flex-1">
+                            <label for="virginRate" class="text-xs text-gray-600">Virgin Material</label>
+                            <input type="number" id="virginRate" min="0" max="100" value="30"
+                                class="w-full mt-1 p-2 border rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                        </div>
+                        <div class="flex-1">
+                            <label for="recycledRate" class="text-xs text-gray-600">Recycled Pellets</label>
+                            <input type="number" id="recycledRate" min="0" max="100" value="70"
+                                class="w-full mt-1 p-2 border rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                        </div>
+                    </div>
+                    <p class="text-xs text-gray-500 mt-2">Adjust the ratio of virgin to recycled material. The two
+                        values will always sum to 100.</p>
+                </div>
+
+                <!-- Process Sliders -->
+                <div class="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                    <label class="block text-sm font-medium text-gray-700 mb-4 font-bold">Process Parameters</label>
+                    <div class="space-y-4">
+                        <div>
+                            <label for="successRate" class="block text-sm font-medium text-gray-700">Part Success Rate
+                                (%):</label>
+                            <div class="flex items-center mt-1">
+                                <input type="range" id="successRate" min="0" max="100" value="80"
+                                    class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+                                <span id="successRateValue"
+                                    class="ml-4 font-semibold text-blue-700 w-12 text-center">80%</span>
+                            </div>
+                        </div>
+                        <div>
+                            <label for="printLossRate" class="block text-sm font-medium text-gray-700">Print Loss
+                                (%):</label>
+                            <div class="flex items-center mt-1">
+                                <input type="range" id="printLossRate" min="0" max="100" value="10"
+                                    class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+                                <span id="printLossRateValue"
+                                    class="ml-4 font-semibold text-blue-700 w-12 text-center">10%</span>
+                            </div>
+                        </div>
+                        <div>
+                            <label for="recyclingLossRate" class="block text-sm font-medium text-gray-700">Recycling
+                                Loss (%):</label>
+                            <div class="flex items-center mt-1">
+                                <input type="range" id="recyclingLossRate" min="0" max="100" value="10"
+                                    class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+                                <span id="recyclingLossRateValue"
+                                    class="ml-4 font-semibold text-blue-700 w-12 text-center">10%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div id="sankey-chart-container" class="w-full overflow-x-auto mt-6">
@@ -88,13 +146,8 @@
 
     <script>
         // --- Data Processing and Initial Setup ---
-
-        // This is the core data structure for the Sankey diagram.
-        // It's derived from your draw.io XML. The circular link has been broken
-        // by creating separate input and output nodes for recycled pellets.
         const graphData = {
             nodes: [
-                // The order here is important and is referenced by the links' source/target index.
                 { name: "Virgin Material", color: "#647687" },
                 { name: "Recycled Pellets (Input)", color: "#6d8764" },
                 { name: "Print Process", color: "#f8cecc" },
@@ -104,20 +157,19 @@
                 { name: "Shredder", color: "#76608a" },
                 { name: "Print Loss", color: "#d6d6d6" },
                 { name: "Recycling Loss", color: "#d6d6d6" },
-                { name: "Recycled Pellets (Output)", color: "#22c55e" } // New node to break the cycle
+                { name: "Recycled Pellets (Output)", color: "#22c55e" }
             ],
-            links: [] // Links will be calculated dynamically
+            links: [] // Links are calculated dynamically
         };
 
         // --- D3 Sankey Drawing Function ---
-
         function drawSankey(data) {
             const container = d3.select("#sankey-chart-container");
-            container.select("svg").selectAll("*").remove(); // Clear previous SVG content
+            container.select("svg").selectAll("*").remove();
 
             const containerWidth = parseInt(container.style("width"));
             const height = 500;
-            const width = Math.max(containerWidth, 900); // Ensure a minimum width
+            const width = Math.max(containerWidth, 900);
 
             const svg = d3.select("#sankey")
                 .attr("width", width)
@@ -125,7 +177,6 @@
                 .attr("viewBox", `0 0 ${width} ${height}`)
                 .attr("preserveAspectRatio", "xMinYMin meet");
 
-            // Configure the Sankey generator
             const sankey = d3.sankey()
                 .nodeId(d => d.name)
                 .nodeWidth(25)
@@ -133,52 +184,34 @@
                 .nodeAlign(d3.sankeyJustify)
                 .extent([[1, 5], [width - 1, height - 10]]);
 
-            // Compute the Sankey layout
             let layout;
             try {
                 layout = sankey(data);
             } catch (error) {
                 console.error("Error computing Sankey layout:", error);
-                // Display an error message to the user
                 container.html(`<div class="text-red-600 p-4">Error: Could not generate the diagram. The data may contain a circular reference.</div>`);
                 return;
             }
             const { nodes, links } = layout;
 
-
-            // --- Draw Links (Flows) ---
-            const linkGroup = svg.append("g")
-                .attr("fill", "none")
-                .attr("stroke-opacity", 0.5);
-
-            const link = linkGroup.selectAll("g")
-                .data(links)
-                .join("g")
-                .style("mix-blend-mode", "multiply");
-
+            // Draw Links
+            const linkGroup = svg.append("g").attr("fill", "none").attr("stroke-opacity", 0.5);
+            const link = linkGroup.selectAll("g").data(links).join("g").style("mix-blend-mode", "multiply");
             const gradient = link.append("linearGradient")
                 .attr("id", (d, i) => `gradient-${i}`)
                 .attr("gradientUnits", "userSpaceOnUse")
                 .attr("x1", d => d.source.x1)
                 .attr("x2", d => d.target.x0);
-
-            gradient.append("stop")
-                .attr("offset", "0%")
-                .attr("stop-color", d => d.source.color);
-
-            gradient.append("stop")
-                .attr("offset", "100%")
-                .attr("stop-color", d => d.target.color);
-
+            gradient.append("stop").attr("offset", "0%").attr("stop-color", d => d.source.color);
+            gradient.append("stop").attr("offset", "100%").attr("stop-color", d => d.target.color);
             link.append("path")
                 .attr("class", "link")
                 .attr("d", d3.sankeyLinkHorizontal())
                 .attr("stroke", (d, i) => `url(#gradient-${i})`)
                 .attr("stroke-width", d => Math.max(1, d.width));
 
-            // --- Tooltip for Links ---
+            // Tooltip for Links
             const tooltip = d3.select(".sankey-tooltip");
-
             link.on("mouseover", (event, d) => {
                 tooltip.transition().duration(200).style("opacity", .9);
                 tooltip.html(`${d.source.name} &rarr; ${d.target.name}<br><b>${d.value.toFixed(2)} units</b>`)
@@ -188,73 +221,60 @@
                 tooltip.transition().duration(500).style("opacity", 0);
             });
 
-            // --- Draw Nodes ---
-            const nodeGroup = svg.append("g")
-                .attr("class", "nodes")
-                .attr("font-family", "sans-serif")
-                .attr("font-size", 10);
-
-            const node = nodeGroup.selectAll("g")
-                .data(nodes)
-                .join("g");
-
+            // Draw Nodes
+            const nodeGroup = svg.append("g").attr("class", "nodes");
+            const node = nodeGroup.selectAll("g").data(nodes).join("g");
             node.append("rect")
-                .attr("x", d => d.x0)
-                .attr("y", d => d.y0)
-                .attr("height", d => d.y1 - d.y0)
-                .attr("width", d => d.x1 - d.x0)
-                .attr("fill", d => d.color)
-                .attr("stroke", "#374151")
-                .attr("stroke-width", 1.5)
-                .attr("rx", 4)
-                .attr("ry", 4);
+                .attr("x", d => d.x0).attr("y", d => d.y0)
+                .attr("height", d => d.y1 - d.y0).attr("width", d => d.x1 - d.x0)
+                .attr("fill", d => d.color).attr("stroke", "#374151")
+                .attr("stroke-width", 1.5).attr("rx", 4).attr("ry", 4);
 
-            // --- Add Text Labels to Nodes ---
+            // Add Text Labels to Nodes
             node.append("text")
                 .attr("x", d => d.x0 < width / 2 ? d.x1 + 6 : d.x0 - 6)
                 .attr("y", d => (d.y1 + d.y0) / 2)
                 .attr("dy", "0.35em")
                 .attr("text-anchor", d => d.x0 < width / 2 ? "start" : "end")
                 .text(d => d.name)
-                .style("fill", "#111827")
-                .style("font-size", "14px")
-                .style("font-weight", "600");
+                .style("fill", "#111827").style("font-size", "14px").style("font-weight", "600");
 
             // Add value text inside the node
             node.append("text")
                 .attr("x", d => (d.x0 + d.x1) / 2)
                 .attr("y", d => (d.y1 + d.y0) / 2)
-                .attr("dy", "0.35em")
-                .attr("text-anchor", "middle")
+                .attr("dy", "0.35em").attr("text-anchor", "middle")
                 .text(d => `${d.value.toFixed(1)}`)
-                .style("fill", "#111827")
-                .style("font-size", "12px")
-                .style("font-weight", "bold");
+                .style("fill", "#111827").style("font-size", "12px").style("font-weight", "bold");
         }
 
         // --- Dynamic Calculation Function ---
-        function calculateAndDraw(successRate) {
-            // successRate is a percentage (e.g., 80)
-            const successDecimal = successRate / 100;
+        function calculateAndDraw(params) {
+            const { virginRate, recycledRate, successRate, printLossRate, recyclingLossRate } = params;
 
-            // Define inputs
-            const virginInput = 30;
-            const recycledInput = 70;
-            const totalInput = virginInput + recycledInput;
+            // Convert percentages to decimals for calculation
+            const successDecimal = successRate / 100;
+            const printLossDecimal = printLossRate / 100;
+            const recyclingLossDecimal = recyclingLossRate / 100;
+
+            // Define inputs based on the ratio
+            const virginInput = virginRate;
+            const recycledInput = recycledRate;
+            const totalInput = virginInput + recycledInput; // Should always be 100
 
             // Calculate flows from Print Process
-            const toPart = totalInput * 0.90;
-            const printLoss = totalInput * 0.10;
+            const toPart = totalInput * (1 - printLossDecimal);
+            const printLoss = totalInput * printLossDecimal;
 
             // Calculate flows from Printed Actuator
             const successfulParts = toPart * successDecimal;
             const failedParts = toPart * (1 - successDecimal);
 
             // Calculate flows from Shredder
-            const toRecycledPellets = failedParts * 0.90;
-            const recyclingLoss = failedParts * 0.10;
+            const toRecycledPellets = failedParts * (1 - recyclingLossDecimal);
+            const recyclingLoss = failedParts * recyclingLossDecimal;
 
-            // Update the links data with the corrected flow
+            // Update the links data with newly calculated values
             graphData.links = [
                 { source: "Virgin Material", target: "Print Process", value: virginInput },
                 { source: "Recycled Pellets (Input)", target: "Print Process", value: recycledInput },
@@ -263,7 +283,6 @@
                 { source: "Printed Actuator", target: "Successful Product", value: successfulParts },
                 { source: "Printed Actuator", target: "Failed Parts", value: failedParts },
                 { source: "Failed Parts", target: "Shredder", value: failedParts },
-                // Corrected link to break the cycle
                 { source: "Shredder", target: "Recycled Pellets (Output)", value: toRecycledPellets },
                 { source: "Shredder", target: "Recycling Loss", value: recyclingLoss }
             ];
@@ -277,26 +296,79 @@
             drawSankey(filteredData);
         }
 
-        // --- Event Listeners ---
-        const successRateSlider = document.getElementById('successRate');
-        const successRateValueSpan = document.getElementById('successRateValue');
+        // --- Event Listeners and Control Logic ---
+        document.addEventListener('DOMContentLoaded', () => {
+            // Get all control elements
+            const virginRateInput = document.getElementById('virginRate');
+            const recycledRateInput = document.getElementById('recycledRate');
+            const successRateSlider = document.getElementById('successRate');
+            const successRateValueSpan = document.getElementById('successRateValue');
+            const printLossSlider = document.getElementById('printLossRate');
+            const printLossValueSpan = document.getElementById('printLossRateValue');
+            const recyclingLossSlider = document.getElementById('recyclingLossRate');
+            const recyclingLossValueSpan = document.getElementById('recyclingLossRateValue');
 
-        successRateSlider.addEventListener('input', (event) => {
-            const newRate = parseInt(event.target.value);
-            successRateValueSpan.textContent = `${newRate}%`;
-            calculateAndDraw(newRate);
+            // Function to gather all values and update the visualization
+            function updateVisualization() {
+                const params = {
+                    virginRate: parseInt(virginRateInput.value),
+                    recycledRate: parseInt(recycledRateInput.value),
+                    successRate: parseInt(successRateSlider.value),
+                    printLossRate: parseInt(printLossSlider.value),
+                    recyclingLossRate: parseInt(recyclingLossSlider.value)
+                };
+                calculateAndDraw(params);
+            }
+
+            // Event listener for sliders
+            function setupSlider(slider, valueSpan) {
+                slider.addEventListener('input', (event) => {
+                    const value = event.target.value;
+                    valueSpan.textContent = `${value}%`;
+                    updateVisualization();
+                });
+            }
+
+            setupSlider(successRateSlider, successRateValueSpan);
+            setupSlider(printLossSlider, printLossValueSpan);
+            setupSlider(recyclingLossSlider, recyclingLossValueSpan);
+
+            // Event listeners for ratio inputs to keep them in sync
+            virginRateInput.addEventListener('input', () => {
+                let virginValue = parseInt(virginRateInput.value) || 0;
+                if (virginValue > 100) {
+                    virginValue = 100;
+                    virginRateInput.value = 100;
+                }
+                if (virginValue < 0) {
+                    virginValue = 0;
+                    virginRateInput.value = 0;
+                }
+                recycledRateInput.value = 100 - virginValue;
+                updateVisualization();
+            });
+
+            recycledRateInput.addEventListener('input', () => {
+                let recycledValue = parseInt(recycledRateInput.value) || 0;
+                if (recycledValue > 100) {
+                    recycledValue = 100;
+                    recycledRateInput.value = 100;
+                }
+                if (recycledValue < 0) {
+                    recycledValue = 0;
+                    recycledRateInput.value = 0;
+                }
+                virginRateInput.value = 100 - recycledValue;
+                updateVisualization();
+            });
+
+            // Initial draw on page load
+            updateVisualization();
+
+            // Redraw on window resize
+            window.addEventListener('resize', updateVisualization);
         });
-
-        // Initial draw
-        calculateAndDraw(parseInt(successRateSlider.value));
-
-        // Redraw on window resize
-        window.addEventListener('resize', () => {
-            calculateAndDraw(parseInt(successRateSlider.value));
-        });
-
     </script>
-
 </body>
 
 </html>
