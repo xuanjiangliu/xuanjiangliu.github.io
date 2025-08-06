@@ -27,9 +27,6 @@
 
         .node text {
             pointer-events: none;
-            font-size: 12px;
-            font-weight: 600;
-            text-shadow: 0 1px 0 #fff;
         }
 
         .sankey-tooltip {
@@ -89,52 +86,70 @@
 
     <div class="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
         <div class="bg-white rounded-xl shadow-lg p-6">
-            <h1 class="text-2xl font-bold text-gray-800 mb-2">Material Flow Analysis</h1>
+            <h1 class="text-2xl font-bold text-gray-800 mb-2">Material flow analysis</h1>
 
             <p class="text-gray-600 mb-4">
-                This interactive tool is designed for Material Flow Analysis (MFA) of a manufacturing process that uses
+                This interactive tool is designed for material flow analysis (MFA) of a manufacturing process that uses
                 both virgin and recycled materials. It helps visualize how different factors influence material
                 efficiency, waste generation, and the potential for a circular economy.
             </p>
             <div class="text-gray-600 mb-6 text-sm p-4 bg-gray-50 rounded-lg border">
-                <h3 class="font-semibold text-base text-gray-700 mb-2">How to Use This Tool</h3>
+                <h3 class="font-semibold text-base text-gray-700 mb-2">How to use this tool</h3>
                 <ul class="list-disc list-inside space-y-1">
-                    <li><strong>Control Process Parameters:</strong> Use the sliders to modify the 'Part Success Rate',
-                        'Print Loss', and 'Recycling Loss'.</li>
-                    <li><strong>Observe the Input Mix:</strong> The 'Required Input Composition' box shows the necessary
+                    <li><strong>Set total mass:</strong> Start by entering the total mass and unit for your system.</li>
+                    <li><strong>Control process parameters:</strong> Use the sliders to modify the 'Part success rate',
+                        'Print loss', and 'Recycling loss'.</li>
+                    <li><strong>Observe the input mix:</strong> The 'Required input composition' box shows the necessary
                         blend of virgin and recycled material to maintain a steady process.</li>
-                    <li><strong>Analyze the Flow:</strong> The Sankey diagram will instantly update. The width of each
-                        path is proportional to the amount of material. Hover over any flow to see the precise quantity.
-                    </li>
+                    <li><strong>Analyze the flow:</strong> The diagram displays values in your chosen unit. Hover over
+                        any flow or process box for precise values. Labels for very small flows are hidden to prevent
+                        clutter.</li>
                 </ul>
+            </div>
+
+            <!-- Total Mass Input -->
+            <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg mb-6">
+                <label class="block text-sm font-medium text-gray-700 mb-2 font-bold">Total system mass</label>
+                <div class="flex items-center space-x-4">
+                    <div class="flex-1">
+                        <label for="totalMass" class="text-xs text-gray-600">Mass</label>
+                        <input type="number" id="totalMass" value="100"
+                            class="w-full mt-1 p-2 border rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                    </div>
+                    <div class="flex-1">
+                        <label for="massUnit" class="text-xs text-gray-600">Unit</label>
+                        <input type="text" id="massUnit" value="g"
+                            class="w-full mt-1 p-2 border rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                    </div>
+                </div>
             </div>
 
             <!-- All Input Controls -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                 <!-- Material Composition Display -->
                 <div class="p-4 bg-green-50 border border-green-200 rounded-lg">
-                    <label class="block text-sm font-medium text-gray-700 mb-2 font-bold">Required Input
-                        Composition</label>
+                    <label class="block text-sm font-medium text-gray-700 mb-2 font-bold">Required input
+                        composition</label>
                     <div class="flex items-center mt-4 space-x-4 text-center">
                         <div class="flex-1">
-                            <div class="text-xs text-gray-600">Virgin Material</div>
-                            <div id="virginRateDisplay" class="text-2xl font-bold text-gray-800 mt-1">30.0%</div>
+                            <div class="text-sm text-gray-600">Virgin material</div>
+                            <div id="virginRateDisplay" class="text-lg font-bold text-gray-800 mt-1"></div>
                         </div>
                         <div class="flex-1">
-                            <div class="text-xs text-gray-600">Recycled Pellets</div>
-                            <div id="recycledRateDisplay" class="text-2xl font-bold text-gray-800 mt-1">70.0%</div>
+                            <div class="text-sm text-gray-600">Recycled pellets</div>
+                            <div id="recycledRateDisplay" class="text-lg font-bold text-gray-800 mt-1"></div>
                         </div>
                     </div>
                     <p class="text-xs text-gray-500 mt-3 text-center">This is the calculated material mix required to
-                        compensate for system losses.</p>
+                        compensate for system losses. The percentage shows this mix relative to the total mass.</p>
                 </div>
 
                 <!-- Process Sliders -->
                 <div class="p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                    <label class="block text-sm font-medium text-gray-700 mb-4 font-bold">Process Parameters</label>
+                    <label class="block text-sm font-medium text-gray-700 mb-4 font-bold">Process parameters</label>
                     <div class="space-y-4">
                         <div>
-                            <label for="successRate" class="block text-sm font-medium text-gray-700">Part Success Rate
+                            <label for="successRate" class="block text-sm font-medium text-gray-700">Part success rate
                                 (%):</label>
                             <div class="flex items-center mt-1">
                                 <input type="range" id="successRate" min="0" max="100" value="80"
@@ -144,7 +159,7 @@
                             </div>
                         </div>
                         <div>
-                            <label for="printLossRate" class="block text-sm font-medium text-gray-700">Print Loss
+                            <label for="printLossRate" class="block text-sm font-medium text-gray-700">Print loss
                                 (%):</label>
                             <div class="flex items-center mt-1">
                                 <input type="range" id="printLossRate" min="0" max="100" value="10"
@@ -155,7 +170,7 @@
                         </div>
                         <div>
                             <label for="recyclingLossRate" class="block text-sm font-medium text-gray-700">Recycling
-                                Loss (%):</label>
+                                loss (%):</label>
                             <div class="flex items-center mt-1">
                                 <input type="range" id="recyclingLossRate" min="0" max="100" value="10"
                                     class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
@@ -177,7 +192,7 @@
     <!-- Modal for Edge Case Explanations -->
     <div id="modal" class="modal-overlay">
         <div class="modal-content">
-            <h3 id="modal-title" class="text-xl font-bold text-gray-800 mb-3">Edge Case Detected</h3>
+            <h3 id="modal-title" class="text-xl font-bold text-gray-800 mb-3">Edge case detected</h3>
             <p id="modal-text" class="text-gray-600 mb-5">Explanation of the scenario.</p>
             <button id="modal-close"
                 class="w-full bg-blue-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors">Close</button>
@@ -188,22 +203,22 @@
         // --- Data Processing and Initial Setup ---
         const graphData = {
             nodes: [
-                { name: "Virgin Material", color: "#647687" },
-                { name: "Recycled Pellets (Input)", color: "#22c55e" }, // Updated color
-                { name: "Print Process", color: "#f8cecc" },
-                { name: "Printed Actuator", color: "#dae8fc" },
-                { name: "Successful Product", color: "#e6f7ff" },
-                { name: "Failed Parts", color: "#ffe6cc" },
+                { name: "Virgin material", color: "#647687" },
+                { name: "Recycled pellets (input)", color: "#22c55e" },
+                { name: "Print process", color: "#f8cecc" },
+                { name: "Printed actuator", color: "#dae8fc" },
+                { name: "Successful product", color: "#e6f7ff" },
+                { name: "Failed parts", color: "#ffe6cc" },
                 { name: "Shredder", color: "#76608a" },
-                { name: "Print Loss", color: "#d6d6d6" },
-                { name: "Recycling Loss", color: "#d6d6d6" },
-                { name: "Recycled Pellets (Output)", color: "#22c55e" }
+                { name: "Print loss", color: "#d6d6d6" },
+                { name: "Recycling loss", color: "#d6d6d6" },
+                { name: "Recycled pellets (output)", color: "#22c55e" }
             ],
             links: [] // Links are calculated dynamically
         };
 
         // --- D3 Sankey Drawing Function ---
-        function drawSankey(data) {
+        function drawSankey(data, totalMass, massUnit) {
             const container = d3.select("#sankey-chart-container");
             container.select("svg").selectAll("*").remove();
 
@@ -229,10 +244,11 @@
                 layout = sankey(data);
             } catch (error) {
                 console.error("Error computing Sankey layout:", error);
-                container.html(`<div class="text-red-600 p-4">Error: Could not generate the diagram. The data may contain a circular reference.</div>`);
+                container.html(`<div class="text-red-600 p-4">Error: Could not generate the diagram.</div>`);
                 return;
             }
             const { nodes, links } = layout;
+            const tooltip = d3.select(".sankey-tooltip");
 
             // Draw Links
             const linkGroup = svg.append("g").attr("fill", "none").attr("stroke-opacity", 0.5);
@@ -250,10 +266,9 @@
                 .attr("stroke", (d, i) => `url(#gradient-${i})`)
                 .attr("stroke-width", d => Math.max(1, d.width));
 
-            const tooltip = d3.select(".sankey-tooltip");
             link.on("mouseover", (event, d) => {
                 tooltip.transition().duration(200).style("opacity", .9);
-                tooltip.html(`${d.source.name} &rarr; ${d.target.name}<br><b>${d.value.toFixed(2)} units</b>`)
+                tooltip.html(`${d.source.name} &rarr; ${d.target.name}<br><b>${d.value.toFixed(2)} ${massUnit}</b>`)
                     .style("left", (event.pageX + 15) + "px")
                     .style("top", (event.pageY - 28) + "px");
             }).on("mouseout", () => {
@@ -262,40 +277,65 @@
 
             // Draw Nodes
             const nodeGroup = svg.append("g").attr("class", "nodes");
-            const node = nodeGroup.selectAll("g").data(nodes).join("g");
+            const node = nodeGroup.selectAll("g").data(nodes).join("g")
+                .style("display", d => d.value < 0.01 ? "none" : "block"); // Hide node group if value is zero
+
             node.append("rect")
                 .attr("x", d => d.x0).attr("y", d => d.y0)
                 .attr("height", d => d.y1 - d.y0).attr("width", d => d.x1 - d.x0)
                 .attr("fill", d => d.color).attr("stroke", "#374151")
                 .attr("stroke-width", 1.5).attr("rx", 4).attr("ry", 4);
 
+            node.on("mouseover", (event, d) => {
+                tooltip.transition().duration(200).style("opacity", .9);
+                tooltip.html(`${d.name}<br><b>${d.value.toFixed(2)} ${massUnit}</b>`)
+                    .style("left", (event.pageX + 15) + "px")
+                    .style("top", (event.pageY - 28) + "px");
+            }).on("mouseout", () => {
+                tooltip.transition().duration(500).style("opacity", 0);
+            });
+
+            // Add Node Labels with wrapping and value below
             node.append("text")
                 .attr("x", d => d.x0 < width / 2 ? d.x1 + 6 : d.x0 - 6)
                 .attr("y", d => (d.y1 + d.y0) / 2)
-                .attr("dy", "0.35em")
                 .attr("text-anchor", d => d.x0 < width / 2 ? "start" : "end")
-                .text(d => d.name)
-                .style("fill", "#111827").style("font-size", "14px").style("font-weight", "600");
+                .style("font-size", "12px")
+                .style("fill", "#374151")
+                .style("display", d => (d.y1 - d.y0) < 35 ? "none" : "block") // Hide label if node is too small
+                .each(function (d) {
+                    const words = d.name.split(' ');
+                    const numLines = words.length + 1;
+                    const textElement = d3.select(this);
+                    const lineHeight = 1.1;
+                    const startDy = -((numLines - 1) / 2) * lineHeight;
 
-            node.append("text")
-                .attr("x", d => (d.x0 + d.x1) / 2)
-                .attr("y", d => (d.y1 + d.y0) / 2)
-                .attr("dy", "0.35em").attr("text-anchor", "middle")
-                .text(d => `${d.value.toFixed(1)}`)
-                .style("fill", "#111827").style("font-size", "12px").style("font-weight", "bold");
+                    words.forEach((word, i) => {
+                        textElement.append("tspan")
+                            .attr("x", d.x0 < width / 2 ? d.x1 + 6 : d.x0 - 6)
+                            .attr("dy", i === 0 ? `${startDy}em` : `${lineHeight}em`)
+                            .text(word);
+                    });
+
+                    const percentage = totalMass > 0 ? (d.value / totalMass * 100).toFixed(1) : 0;
+                    textElement.append("tspan")
+                        .style("font-weight", "bold")
+                        .attr("x", d.x0 < width / 2 ? d.x1 + 6 : d.x0 - 6)
+                        .attr("dy", `${lineHeight}em`)
+                        .text(`(${d.value.toFixed(1)} ${massUnit}, ${percentage}%)`);
+                });
         }
 
         // --- Dynamic Calculation Function for Steady-State ---
         function calculateAndDraw(params) {
-            const { successRate, printLossRate, recyclingLossRate } = params;
+            const { successRate, printLossRate, recyclingLossRate, totalMass, massUnit } = params;
 
-            const totalInput = 100;
             const successDecimal = successRate / 100;
             const printLossDecimal = printLossRate / 100;
             const recyclingLossDecimal = recyclingLossRate / 100;
 
-            const printLoss = totalInput * printLossDecimal;
-            const toPart = totalInput * (1 - printLossDecimal);
+            const printLoss = totalMass * printLossDecimal;
+            const toPart = totalMass * (1 - printLossDecimal);
 
             const successfulParts = toPart * successDecimal;
             const failedParts = toPart * (1 - successDecimal);
@@ -306,27 +346,37 @@
             const recycledInput = recycledPelletsOutput;
             const virginInput = printLoss + recyclingLoss + successfulParts;
 
-            document.getElementById('virginRateDisplay').textContent = virginInput.toFixed(1) + '%';
-            document.getElementById('recycledRateDisplay').textContent = recycledInput.toFixed(1) + '%';
+            // Update display boxes
+            const virginPercent = totalMass > 0 ? (virginInput / totalMass * 100).toFixed(1) : 0;
+            const recycledPercent = totalMass > 0 ? (recycledInput / totalMass * 100).toFixed(1) : 0;
+            document.getElementById('virginRateDisplay').innerHTML = `${virginInput.toFixed(1)} ${massUnit} <span class="text-sm text-gray-500">(${virginPercent}%)</span>`;
+            document.getElementById('recycledRateDisplay').innerHTML = `${recycledInput.toFixed(1)} ${massUnit} <span class="text-sm text-gray-500">(${recycledPercent}%)</span>`;
 
             graphData.links = [
-                { source: "Virgin Material", target: "Print Process", value: virginInput },
-                { source: "Recycled Pellets (Input)", target: "Print Process", value: recycledInput },
-                { source: "Print Process", target: "Printed Actuator", value: toPart },
-                { source: "Print Process", target: "Print Loss", value: printLoss },
-                { source: "Printed Actuator", target: "Successful Product", value: successfulParts },
-                { source: "Printed Actuator", target: "Failed Parts", value: failedParts },
-                { source: "Failed Parts", target: "Shredder", value: failedParts },
-                { source: "Shredder", target: "Recycled Pellets (Output)", value: recycledPelletsOutput },
-                { source: "Shredder", target: "Recycling Loss", value: recyclingLoss }
+                { source: "Virgin material", target: "Print process", value: virginInput },
+                { source: "Recycled pellets (input)", target: "Print process", value: recycledInput },
+                { source: "Print process", target: "Printed actuator", value: toPart },
+                { source: "Print process", target: "Print loss", value: printLoss },
+                { source: "Printed actuator", target: "Successful product", value: successfulParts },
+                { source: "Printed actuator", target: "Failed parts", value: failedParts },
+                { source: "Failed parts", target: "Shredder", value: failedParts },
+                { source: "Shredder", target: "Recycled pellets (output)", value: recycledPelletsOutput },
+                { source: "Shredder", target: "Recycling loss", value: recyclingLoss }
             ];
 
             const filteredData = {
-                nodes: graphData.nodes,
+                nodes: graphData.nodes.map(node => ({ ...node })),
                 links: graphData.links.filter(link => link.value > 0.001)
             };
 
-            drawSankey(filteredData);
+            filteredData.nodes.forEach(node => {
+                const incoming = filteredData.links.filter(l => l.target === node.name).reduce((sum, l) => sum + l.value, 0);
+                const outgoing = filteredData.links.filter(l => l.source === node.name).reduce((sum, l) => sum + l.value, 0);
+                node.value = Math.max(incoming, outgoing);
+            });
+
+
+            drawSankey(filteredData, totalMass, massUnit);
             checkEdgeCases(params);
         }
 
@@ -334,21 +384,18 @@
         function checkEdgeCases(params) {
             const { successRate, printLossRate, recyclingLossRate } = params;
 
-            // Case 1: Perfectly Circular System
             if (successRate === 0 && printLossRate === 0 && recyclingLossRate === 0) {
-                showModal("Perfectly Circular System", "With no material leaving the system as product or loss, it becomes self-sustaining. It can run on 100% recycled material, requiring no new virgin input.");
+                showModal("Perfectly circular system", "With no material leaving the system as product or loss, it becomes self-sustaining. It can run on 100% recycled material, requiring no new virgin input.");
                 return;
             }
 
-            // Case 2: Perfectly Linear System
             if (successRate === 100) {
-                showModal("Perfectly Linear System", "All material successfully becomes product and exits the system. Since nothing is available for recycling, 100% of the input must be virgin material.");
+                showModal("Perfectly linear system", "All material successfully becomes product and exits the system. Since nothing is available for recycling, 100% of the input must be virgin material.");
                 return;
             }
 
-            // Case 3: Total System Failure
             if (printLossRate === 100 || (successRate === 0 && recyclingLossRate === 100)) {
-                showModal("Total System Failure", "All material is lost either during printing or recycling. With no material recovered, the system requires 100% virgin material just to replace these losses.");
+                showModal("Total system failure", "All material is lost either during printing or recycling. With no material recovered, the system requires 100% virgin material just to replace these losses.");
                 return;
             }
         }
@@ -361,6 +408,8 @@
 
         // --- Event Listeners and Control Logic ---
         document.addEventListener('DOMContentLoaded', () => {
+            const totalMassInput = document.getElementById('totalMass');
+            const massUnitInput = document.getElementById('massUnit');
             const successRateSlider = document.getElementById('successRate');
             const successRateValueSpan = document.getElementById('successRateValue');
             const printLossSlider = document.getElementById('printLossRate');
@@ -372,6 +421,8 @@
 
             function updateVisualization() {
                 const params = {
+                    totalMass: parseFloat(totalMassInput.value) || 0,
+                    massUnit: massUnitInput.value || 'units',
                     successRate: parseInt(successRateSlider.value),
                     printLossRate: parseInt(printLossSlider.value),
                     recyclingLossRate: parseInt(recyclingLossSlider.value)
@@ -391,7 +442,9 @@
             setupSlider(printLossSlider, printLossValueSpan);
             setupSlider(recyclingLossSlider, recyclingLossValueSpan);
 
-            // Modal close events
+            totalMassInput.addEventListener('input', updateVisualization);
+            massUnitInput.addEventListener('input', updateVisualization);
+
             modalCloseBtn.addEventListener('click', () => modal.classList.remove('active'));
             modal.addEventListener('click', (event) => {
                 if (event.target === modal) {
