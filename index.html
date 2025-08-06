@@ -89,48 +89,51 @@
             <h1 class="text-2xl font-bold text-gray-800 mb-2">Material flow analysis</h1>
 
             <p class="text-gray-600 mb-4">
-                This interactive tool is designed for material flow analysis (MFA) of a manufacturing process that uses
+                This interactive tool is designed for Material Flow Analysis (MFA) of a manufacturing process that uses
                 both virgin and recycled materials. It helps visualize how different factors influence material
                 efficiency, waste generation, and the potential for a circular economy.
             </p>
             <div class="text-gray-600 mb-6 text-sm p-4 bg-gray-50 rounded-lg border">
                 <h3 class="font-semibold text-base text-gray-700 mb-2">How to use this tool</h3>
-                <ul class="list-disc list-inside space-y-1">
-                    <li><strong>Set total mass:</strong> Start by entering the total mass and unit for your system.</li>
+                <ol class="list-decimal list-inside space-y-1">
+                    <li><strong>Set initial mass:</strong> Start by entering the total mass and unit for your system.
+                    </li>
                     <li><strong>Control process parameters:</strong> Use the sliders to modify the 'Part success rate',
                         'Print loss', and 'Recycling loss'.</li>
-                    <li><strong>Observe the input mix:</strong> The 'Required input composition' box shows the necessary
-                        blend of virgin and recycled material to maintain a steady process.</li>
-                    <li><strong>Analyze the flow:</strong> The diagram displays values in your chosen unit. Hover over
-                        any flow or process box for precise values. Labels for very small flows are hidden to prevent
-                        clutter.</li>
-                </ul>
+                    <li><strong>Analyze results:</strong> The top panels show the required inputs and the final system
+                        yield.</li>
+                    <li><strong>Explore the flow:</strong> The diagram displays values in your chosen unit. Hover over
+                        any flow or process box for precise values, including percentages.</li>
+                </ol>
             </div>
 
-            <!-- Total Mass Input -->
-            <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg mb-6">
-                <label class="block text-sm font-medium text-gray-700 mb-2 font-bold">Total system mass</label>
-                <div class="flex items-center space-x-4">
-                    <div class="flex-1">
-                        <label for="totalMass" class="text-xs text-gray-600">Mass</label>
-                        <input type="number" id="totalMass" value="100"
-                            class="w-full mt-1 p-2 border rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
-                    </div>
-                    <div class="flex-1">
-                        <label for="massUnit" class="text-xs text-gray-600">Unit</label>
-                        <input type="text" id="massUnit" value="g"
-                            class="w-full mt-1 p-2 border rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+            <!-- Top Dashboard -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                <!-- Initial Mass Input -->
+                <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+                    <label class="block text-sm font-medium text-gray-700 mb-2 font-bold">Initial input mass</label>
+                    <p class="text-xs text-gray-500 mb-4">Define the starting mass and unit for the simulation.</p>
+                    <div class="flex items-center space-x-4">
+                        <div class="flex-1">
+                            <label for="totalMass" class="text-xs text-gray-600">Mass</label>
+                            <input type="number" id="totalMass" value="100"
+                                class="w-full mt-1 p-2 border rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                        </div>
+                        <div class="flex-1">
+                            <label for="massUnit" class="text-xs text-gray-600">Unit</label>
+                            <input type="text" id="massUnit" value="g"
+                                class="w-full mt-1 p-2 border rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- All Input Controls -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                 <!-- Material Composition Display -->
                 <div class="p-4 bg-green-50 border border-green-200 rounded-lg">
                     <label class="block text-sm font-medium text-gray-700 mb-2 font-bold">Required input
                         composition</label>
-                    <div class="flex items-center mt-4 space-x-4 text-center">
+                    <p class="text-xs text-gray-500 mb-4">The calculated material mix needed to sustain the process
+                        based on losses.</p>
+                    <div class="flex items-center space-x-4 text-center">
                         <div class="flex-1">
                             <div class="text-sm text-gray-600">Virgin material</div>
                             <div id="virginRateDisplay" class="text-lg font-bold text-gray-800 mt-1"></div>
@@ -140,43 +143,60 @@
                             <div id="recycledRateDisplay" class="text-lg font-bold text-gray-800 mt-1"></div>
                         </div>
                     </div>
-                    <p class="text-xs text-gray-500 mt-3 text-center">This is the calculated material mix required to
-                        compensate for system losses. The percentage shows this mix relative to the total mass.</p>
                 </div>
 
-                <!-- Process Sliders -->
-                <div class="p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                    <label class="block text-sm font-medium text-gray-700 mb-4 font-bold">Process parameters</label>
-                    <div class="space-y-4">
-                        <div>
-                            <label for="successRate" class="block text-sm font-medium text-gray-700">Part success rate
-                                (%):</label>
-                            <div class="flex items-center mt-1">
-                                <input type="range" id="successRate" min="0" max="100" value="80"
-                                    class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
-                                <span id="successRateValue"
-                                    class="ml-4 font-semibold text-blue-700 w-12 text-center">80%</span>
-                            </div>
+                <!-- Overall System Yield Display -->
+                <div class="p-4 bg-purple-50 border border-purple-200 rounded-lg">
+                    <label class="block text-sm font-medium text-gray-700 mb-2 font-bold">Overall system yield</label>
+                    <p class="text-xs text-gray-500 mb-4">The final percentage of material that becomes successful
+                        product vs. total loss.</p>
+                    <div class="flex items-center space-x-4 text-center">
+                        <div class="flex-1">
+                            <div class="text-sm text-gray-600">Successful product</div>
+                            <div id="yieldDisplay" class="text-lg font-bold text-gray-800 mt-1"></div>
                         </div>
-                        <div>
-                            <label for="printLossRate" class="block text-sm font-medium text-gray-700">Print loss
-                                (%):</label>
-                            <div class="flex items-center mt-1">
-                                <input type="range" id="printLossRate" min="0" max="100" value="10"
-                                    class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
-                                <span id="printLossRateValue"
-                                    class="ml-4 font-semibold text-blue-700 w-12 text-center">10%</span>
-                            </div>
+                        <div class="flex-1">
+                            <div class="text-sm text-gray-600">Total system loss</div>
+                            <div id="lossDisplay" class="text-lg font-bold text-gray-800 mt-1"></div>
                         </div>
-                        <div>
-                            <label for="recyclingLossRate" class="block text-sm font-medium text-gray-700">Recycling
-                                loss (%):</label>
-                            <div class="flex items-center mt-1">
-                                <input type="range" id="recyclingLossRate" min="0" max="100" value="10"
-                                    class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
-                                <span id="recyclingLossRateValue"
-                                    class="ml-4 font-semibold text-blue-700 w-12 text-center">10%</span>
-                            </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Process Sliders -->
+            <div class="p-4 bg-blue-50 border border-blue-200 rounded-lg mb-6">
+                <label class="block text-sm font-medium text-gray-700 mb-2 font-bold">Process parameters</label>
+                <p class="text-xs text-gray-500 mb-4">Adjust the sliders to define the efficiency of each step in the
+                    process.</p>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div>
+                        <label for="successRate" class="block text-sm font-medium text-gray-700">Part success rate
+                            (%):</label>
+                        <div class="flex items-center mt-1">
+                            <input type="range" id="successRate" min="0" max="100" value="80"
+                                class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+                            <span id="successRateValue"
+                                class="ml-4 font-semibold text-blue-700 w-12 text-center">80%</span>
+                        </div>
+                    </div>
+                    <div>
+                        <label for="printLossRate" class="block text-sm font-medium text-gray-700">Print loss
+                            (%):</label>
+                        <div class="flex items-center mt-1">
+                            <input type="range" id="printLossRate" min="0" max="100" value="10"
+                                class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+                            <span id="printLossRateValue"
+                                class="ml-4 font-semibold text-blue-700 w-12 text-center">10%</span>
+                        </div>
+                    </div>
+                    <div>
+                        <label for="recyclingLossRate" class="block text-sm font-medium text-gray-700">Recycling loss
+                            (%):</label>
+                        <div class="flex items-center mt-1">
+                            <input type="range" id="recyclingLossRate" min="0" max="100" value="10"
+                                class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+                            <span id="recyclingLossRateValue"
+                                class="ml-4 font-semibold text-blue-700 w-12 text-center">10%</span>
                         </div>
                     </div>
                 </div>
@@ -232,9 +252,25 @@
                 .attr("viewBox", `0 0 ${width} ${height}`)
                 .attr("preserveAspectRatio", "xMinYMin meet");
 
+            // --- Dynamic Node Width Calculation ---
+            let maxTextWidth = 0;
+            const tempText = svg.append("text")
+                .attr("font-family", "Inter, sans-serif")
+                .attr("font-size", "12px")
+                .attr("font-weight", "bold");
+
+            data.nodes.forEach(node => {
+                if (node.value > 0.01) {
+                    const text = `${node.value.toFixed(1)} ${massUnit}`;
+                    maxTextWidth = Math.max(maxTextWidth, tempText.text(text).node().getComputedTextLength());
+                }
+            });
+            tempText.remove();
+            const dynamicNodeWidth = Math.max(60, maxTextWidth + 20); // Add padding
+
             const sankey = d3.sankey()
                 .nodeId(d => d.name)
-                .nodeWidth(25)
+                .nodeWidth(dynamicNodeWidth)
                 .nodePadding(20)
                 .nodeAlign(d3.sankeyJustify)
                 .extent([[1, 5], [width - 1, height - 10]]);
@@ -278,7 +314,7 @@
             // Draw Nodes
             const nodeGroup = svg.append("g").attr("class", "nodes");
             const node = nodeGroup.selectAll("g").data(nodes).join("g")
-                .style("display", d => d.value < 0.01 ? "none" : "block"); // Hide node group if value is zero
+                .style("display", d => d.value < 0.01 ? "none" : "block");
 
             node.append("rect")
                 .attr("x", d => d.x0).attr("y", d => d.y0)
@@ -287,43 +323,38 @@
                 .attr("stroke-width", 1.5).attr("rx", 4).attr("ry", 4);
 
             node.on("mouseover", (event, d) => {
+                const percentage = totalMass > 0 ? (d.value / totalMass * 100).toFixed(1) : 0;
                 tooltip.transition().duration(200).style("opacity", .9);
-                tooltip.html(`${d.name}<br><b>${d.value.toFixed(2)} ${massUnit}</b>`)
+                tooltip.html(`${d.name}<br><b>${d.value.toFixed(1)} ${massUnit}</b><br><span class="text-xs">(${percentage}% of total)</span>`)
                     .style("left", (event.pageX + 15) + "px")
                     .style("top", (event.pageY - 28) + "px");
             }).on("mouseout", () => {
                 tooltip.transition().duration(500).style("opacity", 0);
             });
 
-            // Add Node Labels with wrapping and value below
+            // Add Node Labels (Name)
             node.append("text")
                 .attr("x", d => d.x0 < width / 2 ? d.x1 + 6 : d.x0 - 6)
                 .attr("y", d => (d.y1 + d.y0) / 2)
+                .attr("dy", "0.35em")
                 .attr("text-anchor", d => d.x0 < width / 2 ? "start" : "end")
+                .text(d => d.name)
+                .style("font-size", "13px")
+                .style("font-weight", "600")
+                .style("fill", "#374151");
+
+            // Add Node Value inside the box
+            node.append("text")
+                .attr("x", d => (d.x0 + d.x1) / 2)
+                .attr("y", d => (d.y1 + d.y0) / 2)
+                .attr("dy", "0.35em")
+                .attr("text-anchor", "middle")
+                .text(d => `${d.value.toFixed(1)} ${massUnit}`)
                 .style("font-size", "12px")
-                .style("fill", "#374151")
-                .style("display", d => (d.y1 - d.y0) < 35 ? "none" : "block") // Hide label if node is too small
-                .each(function (d) {
-                    const words = d.name.split(' ');
-                    const numLines = words.length + 1;
-                    const textElement = d3.select(this);
-                    const lineHeight = 1.1;
-                    const startDy = -((numLines - 1) / 2) * lineHeight;
+                .style("font-weight", "bold")
+                .style("fill", "#111827")
+                .style("display", d => (d.y1 - d.y0) > 15 ? "block" : "none");
 
-                    words.forEach((word, i) => {
-                        textElement.append("tspan")
-                            .attr("x", d.x0 < width / 2 ? d.x1 + 6 : d.x0 - 6)
-                            .attr("dy", i === 0 ? `${startDy}em` : `${lineHeight}em`)
-                            .text(word);
-                    });
-
-                    const percentage = totalMass > 0 ? (d.value / totalMass * 100).toFixed(1) : 0;
-                    textElement.append("tspan")
-                        .style("font-weight", "bold")
-                        .attr("x", d.x0 < width / 2 ? d.x1 + 6 : d.x0 - 6)
-                        .attr("dy", `${lineHeight}em`)
-                        .text(`(${d.value.toFixed(1)} ${massUnit}, ${percentage}%)`);
-                });
         }
 
         // --- Dynamic Calculation Function for Steady-State ---
@@ -345,12 +376,20 @@
 
             const recycledInput = recycledPelletsOutput;
             const virginInput = printLoss + recyclingLoss + successfulParts;
+            const totalLoss = printLoss + recyclingLoss + (failedParts * (1 - (1 - recyclingLossDecimal)))
 
             // Update display boxes
             const virginPercent = totalMass > 0 ? (virginInput / totalMass * 100).toFixed(1) : 0;
             const recycledPercent = totalMass > 0 ? (recycledInput / totalMass * 100).toFixed(1) : 0;
             document.getElementById('virginRateDisplay').innerHTML = `${virginInput.toFixed(1)} ${massUnit} <span class="text-sm text-gray-500">(${virginPercent}%)</span>`;
             document.getElementById('recycledRateDisplay').innerHTML = `${recycledInput.toFixed(1)} ${massUnit} <span class="text-sm text-gray-500">(${recycledPercent}%)</span>`;
+
+            const yieldPercent = totalMass > 0 ? (successfulParts / totalMass * 100).toFixed(1) : 0;
+            const totalLossMass = totalMass - successfulParts;
+            const lossPercent = totalMass > 0 ? (totalLossMass / totalMass * 100).toFixed(1) : 0;
+            document.getElementById('yieldDisplay').innerHTML = `${successfulParts.toFixed(1)} ${massUnit} <span class="text-sm text-gray-500">(${yieldPercent}%)</span>`;
+            document.getElementById('lossDisplay').innerHTML = `${totalLossMass.toFixed(1)} ${massUnit} <span class="text-sm text-gray-500">(${lossPercent}%)</span>`;
+
 
             graphData.links = [
                 { source: "Virgin material", target: "Print process", value: virginInput },
