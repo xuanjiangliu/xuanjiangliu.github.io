@@ -79,6 +79,56 @@
         .modal-overlay.active .modal-content {
             transform: scale(1);
         }
+
+        /* Flip card styles */
+        .flip-card {
+            perspective: 1000px;
+        }
+
+        .dashboard-panel {
+            min-height: 280px;
+            /* Ensures consistent height */
+        }
+
+        .flip-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+
+        .flip-card.is-flipped .flip-card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .flip-card-front,
+        .flip-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            border-radius: 0.5rem;
+            /* Match parent */
+        }
+
+        .flip-card-back {
+            transform: rotateY(180deg);
+        }
+
+        .validation-tooltip {
+            position: absolute;
+            background-color: #ef4444;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            z-index: 10;
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+        }
     </style>
 </head>
 
@@ -98,122 +148,190 @@
                 <ol class="list-decimal list-inside space-y-1">
                     <li><strong>Set initial mass:</strong> Start by entering the total mass and unit for your system.
                     </li>
-                    <li><strong>Control process parameters:</strong> Use the sliders to modify the 'Part success rate',
-                        'Print loss', and 'Recycling loss'.</li>
-                    <li><strong>Analyze results:</strong> The top panels show the required inputs and the final system
-                        yield.</li>
+                    <li><strong>Choose your mode:</strong> Use the "Simulation mode" (sliders) to predict outcomes, or
+                        flip to the "Experiment log" to calculate efficiencies from measured weights.</li>
+                    <li><strong>Analyze results:</strong> The panels below the diagram show the required inputs and the
+                        final system yield.</li>
                     <li><strong>Explore the flow:</strong> The diagram displays values in your chosen unit. Hover over
-                        any flow or process box for precise values, including percentages.</li>
+                        any flow or process box for precise values.</li>
                 </ol>
             </div>
 
-            <!-- Main Dashboard -->
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-                <!-- Left Column: User Inputs -->
-                <div class="flex flex-col gap-6">
-                    <!-- Initial Mass Input -->
-                    <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-                        <label class="block text-sm font-medium text-gray-700 mb-2 font-bold">Initial input mass</label>
-                        <p class="text-xs text-gray-500 mb-4">Define the starting mass and unit for the simulation.</p>
-                        <div class="flex items-center space-x-4">
-                            <div class="flex-1">
-                                <label for="totalMass" class="text-xs text-gray-600">Mass</label>
-                                <input type="number" id="totalMass" value="100"
-                                    class="w-full mt-1 p-2 border rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
-                            </div>
-                            <div class="flex-1">
-                                <label for="massUnit" class="text-xs text-gray-600">Unit</label>
-                                <input type="text" id="massUnit" value="g"
-                                    class="w-full mt-1 p-2 border rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
-                            </div>
+            <!-- Top Dashboard -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+                <!-- Initial Mass Input -->
+                <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg lg:col-span-1 dashboard-panel">
+                    <label class="block text-sm font-medium text-gray-700 mb-2 font-bold">Initial input mass</label>
+                    <p class="text-xs text-gray-500 mb-4">Define the starting mass and unit for the simulation.</p>
+                    <div class="flex items-center space-x-4 relative">
+                        <div class="flex-grow">
+                            <label for="totalMass" class="text-xs text-gray-600">Mass</label>
+                            <input type="number" id="totalMass" value="100.0" step="0.1" min="0"
+                                class="w-full mt-1 p-2 border rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                            <div class="validation-tooltip">Positive numbers only</div>
+                        </div>
+                        <div class="w-1/3">
+                            <label for="massUnit" class="text-xs text-gray-600">Unit</label>
+                            <input type="text" id="massUnit" value="g"
+                                class="w-full mt-1 p-2 border rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
                         </div>
                     </div>
-                    <!-- Process Sliders -->
-                    <div class="p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                        <label class="block text-sm font-medium text-gray-700 mb-2 font-bold">Process parameters</label>
-                        <p class="text-xs text-gray-500 mb-4">Adjust the sliders to define the efficiency of each step in
-                            the
-                            process.</p>
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                            <div>
-                                <label for="successRate" class="block text-sm font-medium text-gray-700">Part success
-                                    rate
-                                    (%):</label>
-                                <div class="flex items-center mt-1">
-                                    <input type="range" id="successRate" min="0" max="100" value="80"
-                                        class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
-                                    <span id="successRateValue"
-                                        class="ml-4 font-semibold text-blue-700 w-12 text-center">80%</span>
-                                </div>
-                            </div>
-                            <div>
-                                <label for="printLossRate" class="block text-sm font-medium text-gray-700">Print loss
-                                    (%):</label>
-                                <div class="flex items-center mt-1">
-                                    <input type="range" id="printLossRate" min="0" max="100" value="10"
-                                        class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
-                                    <span id="printLossRateValue"
-                                        class="ml-4 font-semibold text-blue-700 w-12 text-center">10%</span>
-                                </div>
-                            </div>
-                            <div>
-                                <label for="recyclingLossRate"
-                                    class="block text-sm font-medium text-gray-700">Recycling loss
-                                    (%):</label>
-                                <div class="flex items-center mt-1">
-                                    <input type="range" id="recyclingLossRate" min="0" max="100" value="10"
-                                        class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
-                                    <span id="recyclingLossRateValue"
-                                        class="ml-4 font-semibold text-blue-700 w-12 text-center">10%</span>
-                                </div>
-                            </div>
+                    <div id="unaccounted-mass-container" class="mt-4 hidden">
+                        <label for="unaccountedMass" class="block text-xs font-medium text-gray-700">Unaccounted
+                            mass</label>
+                        <div id="unaccountedMass" class="w-full mt-1 p-2 text-sm bg-yellow-100 border rounded-md">0.0 g
                         </div>
                     </div>
                 </div>
 
-                <!-- Right Column: Results -->
-                <div class="flex flex-col gap-6">
-                    <!-- Material Composition Display -->
-                    <div class="p-4 bg-green-50 border border-green-200 rounded-lg">
-                        <label class="block text-sm font-medium text-gray-700 mb-2 font-bold">Required input
-                            composition</label>
-                        <p class="text-xs text-gray-500 mb-4">The calculated material mix needed to sustain the process
-                            based on losses.</p>
-                        <div class="flex items-center space-x-4 text-center">
-                            <div class="flex-1">
-                                <div class="text-sm text-gray-600">Virgin material</div>
-                                <div id="virginRateDisplay" class="text-lg font-bold text-gray-800 mt-1"></div>
+                <!-- Process Parameters / Experiment Log -->
+                <div class="lg:col-span-2 flip-card dashboard-panel" id="parameter-card">
+                    <div class="flip-card-inner">
+                        <!-- Front: Sliders -->
+                        <div class="p-4 bg-blue-50 border border-blue-200 flip-card-front">
+                            <div class="flex justify-between items-center mb-2">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 font-bold">Simulation
+                                        mode</label>
+                                    <p class="text-xs text-gray-500">Adjust sliders to predict outcomes.</p>
+                                </div>
+                                <button id="flip-to-log" class="p-2 rounded-full hover:bg-blue-200 transition">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                                        class="bi bi-arrow-repeat" viewBox="0 0 16 16">
+                                        <path
+                                            d="M11.534 7h3.932a.25.25 0 0 1 .192.41l-1.966 2.36a.25.25 0 0 1-.384 0l-1.966-2.36a.25.25 0 0 1 .192-.41zm-11 2h3.932a.25.25 0 0 0 .192-.41L2.692 6.23a.25.25 0 0 0-.384 0L.342 8.59A.25.25 0 0 0 .534 9z" />
+                                        <path fill-rule="evenodd"
+                                            d="M8 3c-1.552 0-2.94.707-3.857 1.818a.5.5 0 1 1-.771-.636A6.002 6.002 0 0 1 13.917 7H12.5A4.5 4.5 0 0 0 8 3zM3.5 9A4.5 4.5 0 0 0 8 13c1.552 0-2.94-.707 3.857-1.818a.5.5 0 1 1 .771.636A6.002 6.002 0 0 1 2.083 9H3.5z" />
+                                    </svg>
+                                </button>
                             </div>
-                            <div class="flex-1">
-                                <div class="text-sm text-gray-600">Recycled pellets</div>
-                                <div id="recycledRateDisplay" class="text-lg font-bold text-gray-800 mt-1"></div>
+                            <div class="space-y-4 mt-2">
+                                <div>
+                                    <label for="successRate" class="block text-sm font-medium text-gray-700">Part
+                                        success rate (%):</label>
+                                    <div class="flex items-center mt-1">
+                                        <input type="range" id="successRate" min="0" max="100" value="80" step="0.1"
+                                            class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+                                        <span id="successRateValue"
+                                            class="ml-4 font-semibold text-blue-700 w-16 text-center">80.0%</span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label for="printLossRate" class="block text-sm font-medium text-gray-700">Print
+                                        loss (%):</label>
+                                    <div class="flex items-center mt-1">
+                                        <input type="range" id="printLossRate" min="0" max="100" value="10" step="0.1"
+                                            class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+                                        <span id="printLossRateValue"
+                                            class="ml-4 font-semibold text-blue-700 w-16 text-center">10.0%</span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label for="recyclingLossRate"
+                                        class="block text-sm font-medium text-gray-700">Recycling loss (%):</label>
+                                    <div class="flex items-center mt-1">
+                                        <input type="range" id="recyclingLossRate" min="0" max="100" value="10"
+                                            step="0.1"
+                                            class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+                                        <span id="recyclingLossRateValue"
+                                            class="ml-4 font-semibold text-blue-700 w-16 text-center">10.0%</span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </div>
-
-                    <!-- Overall System Yield Display -->
-                    <div class="p-4 bg-purple-50 border border-purple-200 rounded-lg">
-                        <label class="block text-sm font-medium text-gray-700 mb-2 font-bold">Overall system
-                            yield</label>
-                        <p class="text-xs text-gray-500 mb-4">The final percentage of material that becomes successful
-                            product vs. total loss.</p>
-                        <div class="flex items-center space-x-4 text-center">
-                            <div class="flex-1">
-                                <div class="text-sm text-gray-600">Successful product</div>
-                                <div id="yieldDisplay" class="text-lg font-bold text-gray-800 mt-1"></div>
+                        <!-- Back: Experiment Log -->
+                        <div class="p-4 bg-blue-50 border border-blue-200 flip-card-back">
+                            <div class="flex justify-between items-center mb-2">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 font-bold">Experiment
+                                        log</label>
+                                    <p class="text-xs text-gray-500">Enter measured weights to calculate efficiencies.
+                                    </p>
+                                </div>
+                                <button id="flip-to-sim" class="p-2 rounded-full hover:bg-blue-200 transition">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                                        class="bi bi-arrow-repeat" viewBox="0 0 16 16">
+                                        <path
+                                            d="M11.534 7h3.932a.25.25 0 0 1 .192.41l-1.966 2.36a.25.25 0 0 1-.384 0l-1.966-2.36a.25.25 0 0 1 .192-.41zm-11 2h3.932a.25.25 0 0 0 .192-.41L2.692 6.23a.25.25 0 0 0-.384 0L.342 8.59A.25.25 0 0 0 .534 9z" />
+                                        <path fill-rule="evenodd"
+                                            d="M8 3c-1.552 0-2.94.707-3.857 1.818a.5.5 0 1 1-.771-.636A6.002 6.002 0 0 1 13.917 7H12.5A4.5 4.5 0 0 0 8 3zM3.5 9A4.5 4.5 0 0 0 8 13c1.552 0-2.94-.707 3.857-1.818a.5.5 0 1 1 .771.636A6.002 6.002 0 0 1 2.083 9H3.5z" />
+                                    </svg>
+                                </button>
                             </div>
-                            <div class="flex-1">
-                                <div class="text-sm text-gray-600">Total system loss</div>
-                                <div id="lossDisplay" class="text-lg font-bold text-gray-800 mt-1"></div>
+                            <div class="space-y-4 mt-2">
+                                <div class="relative">
+                                    <label for="printedActuatorMass"
+                                        class="block text-sm font-medium text-gray-700">Printed actuator mass</label>
+                                    <input type="number" id="printedActuatorMass" placeholder="e.g., 90.0" step="0.1"
+                                        min="0"
+                                        class="w-full mt-1 p-2 text-sm border rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                                    <div class="validation-tooltip">Positive numbers only</div>
+                                </div>
+                                <div class="relative">
+                                    <label for="successfulProductMass"
+                                        class="block text-sm font-medium text-gray-700">Successful product mass</label>
+                                    <input type="number" id="successfulProductMass" placeholder="e.g., 72.0" step="0.1"
+                                        min="0"
+                                        class="w-full mt-1 p-2 text-sm border rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                                    <div class="validation-tooltip">Positive numbers only</div>
+                                </div>
+                                <div class="relative">
+                                    <label for="recycledPelletsOutputMass"
+                                        class="block text-sm font-medium text-gray-700">Recycled pellets (output)
+                                        mass</label>
+                                    <input type="number" id="recycledPelletsOutputMass" placeholder="e.g., 16.2"
+                                        step="0.1" min="0"
+                                        class="w-full mt-1 p-2 text-sm border rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                                    <div class="validation-tooltip">Positive numbers only</div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div id="sankey-chart-container" class="w-full overflow-x-auto mt-6">
+            <div id="sankey-chart-container" class="w-full overflow-x-auto mt-6 mb-6">
                 <svg id="sankey"></svg>
             </div>
+
+            <!-- Bottom Dashboard -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Material Composition Display -->
+                <div class="p-4 bg-green-50 border border-green-200 rounded-lg">
+                    <label class="block text-sm font-medium text-gray-700 mb-2 font-bold">Required input
+                        composition</label>
+                    <p class="text-xs text-gray-500 mb-4">The calculated material mix needed to sustain the process
+                        based on losses.</p>
+                    <div class="flex items-center space-x-4 text-center">
+                        <div class="flex-1">
+                            <div class="text-sm text-gray-600">Virgin material</div>
+                            <div id="virginRateDisplay" class="text-lg font-bold text-gray-800 mt-1"></div>
+                        </div>
+                        <div class="flex-1">
+                            <div class="text-sm text-gray-600">Recycled pellets</div>
+                            <div id="recycledRateDisplay" class="text-lg font-bold text-gray-800 mt-1"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Overall System Yield Display -->
+                <div class="p-4 bg-purple-50 border border-purple-200 rounded-lg">
+                    <label class="block text-sm font-medium text-gray-700 mb-2 font-bold">Overall system yield</label>
+                    <p class="text-xs text-gray-500 mb-4">The final percentage of material that becomes successful
+                        product vs. total loss.</p>
+                    <div class="flex items-center space-x-4 text-center">
+                        <div class="flex-1">
+                            <div class="text-sm text-gray-600">Successful product</div>
+                            <div id="yieldDisplay" class="text-lg font-bold text-gray-800 mt-1"></div>
+                        </div>
+                        <div class="flex-1">
+                            <div class="text-sm text-gray-600">Total system loss</div>
+                            <div id="lossDisplay" class="text-lg font-bold text-gray-800 mt-1"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div class="sankey-tooltip"></div>
         </div>
     </div>
@@ -233,7 +351,7 @@
         const graphData = {
             nodes: [
                 { name: "Virgin material", color: "#647687" },
-                { name: "Recycled pellets (input)", color: "#22c55e" },
+                { name: "Recycled pellets|(input)", color: "#22c55e" },
                 { name: "Print process", color: "#f8cecc" },
                 { name: "Printed actuator", color: "#dae8fc" },
                 { name: "Successful product", color: "#e6f7ff" },
@@ -241,7 +359,7 @@
                 { name: "Shredder", color: "#76608a" },
                 { name: "Print loss", color: "#d6d6d6" },
                 { name: "Recycling loss", color: "#d6d6d6" },
-                { name: "Recycled pellets (output)", color: "#22c55e" }
+                { name: "Recycled pellets|(output)", color: "#22c55e" }
             ],
             links: [] // Links are calculated dynamically
         };
@@ -275,7 +393,7 @@
                 }
             });
             tempText.remove();
-            const dynamicNodeWidth = Math.max(60, maxTextWidth + 10); // Reduced padding from 20 to 10
+            const dynamicNodeWidth = Math.max(60, maxTextWidth + 10);
 
             const sankey = d3.sankey()
                 .nodeId(d => d.name)
@@ -313,7 +431,7 @@
 
             link.on("mouseover", (event, d) => {
                 tooltip.transition().duration(200).style("opacity", .9);
-                tooltip.html(`${d.source.name} &rarr; ${d.target.name}<br><b>${d.value.toFixed(2)} ${massUnit}</b>`)
+                tooltip.html(`${d.source.name.replace('|', ' ')} &rarr; ${d.target.name.replace('|', ' ')}<br><b>${d.value.toFixed(2)} ${massUnit}</b>`)
                     .style("left", (event.pageX + 15) + "px")
                     .style("top", (event.pageY - 28) + "px");
             }).on("mouseout", () => {
@@ -334,7 +452,7 @@
             node.on("mouseover", (event, d) => {
                 const percentage = totalMass > 0 ? (d.value / totalMass * 100).toFixed(1) : 0;
                 tooltip.transition().duration(200).style("opacity", .9);
-                tooltip.html(`${d.name}<br><b>${d.value.toFixed(1)} ${massUnit}</b><br><span class="text-xs">(${percentage}% of total)</span>`)
+                tooltip.html(`${d.name.replace('|', ' ')}<br><b>${d.value.toFixed(1)} ${massUnit}</b><br><span class="text-xs">(${percentage}% of total)</span>`)
                     .style("left", (event.pageX + 15) + "px")
                     .style("top", (event.pageY - 28) + "px");
             }).on("mouseout", () => {
@@ -345,12 +463,23 @@
             node.append("text")
                 .attr("x", d => d.x0 < width / 2 ? d.x1 + 6 : d.x0 - 6)
                 .attr("y", d => (d.y1 + d.y0) / 2)
-                .attr("dy", "0.35em")
                 .attr("text-anchor", d => d.x0 < width / 2 ? "start" : "end")
-                .text(d => d.name)
                 .style("font-size", "13px")
                 .style("font-weight", "600")
-                .style("fill", "#374151");
+                .style("fill", "#374151")
+                .each(function (d) {
+                    const lines = d.name.split('|');
+                    const textElement = d3.select(this);
+                    const lineHeight = 1.2;
+                    const startDy = -((lines.length - 1) / 2) * lineHeight;
+
+                    lines.forEach((line, i) => {
+                        textElement.append("tspan")
+                            .attr("x", d.x0 < width / 2 ? d.x1 + 6 : d.x0 - 6)
+                            .attr("dy", i === 0 ? `${startDy}em` : `${lineHeight}em`)
+                            .text(line);
+                    });
+                });
 
             // Add Node Value inside the box
             node.append("text")
@@ -402,13 +531,13 @@
 
             graphData.links = [
                 { source: "Virgin material", target: "Print process", value: virginInput },
-                { source: "Recycled pellets (input)", target: "Print process", value: recycledInput },
+                { source: "Recycled pellets|(input)", target: "Print process", value: recycledInput },
                 { source: "Print process", target: "Printed actuator", value: toPart },
                 { source: "Print process", target: "Print loss", value: printLoss },
                 { source: "Printed actuator", target: "Successful product", value: successfulParts },
                 { source: "Printed actuator", target: "Failed parts", value: failedParts },
                 { source: "Failed parts", target: "Shredder", value: failedParts },
-                { source: "Shredder", target: "Recycled pellets (output)", value: recycledPelletsOutput },
+                { source: "Shredder", target: "Recycled pellets|(output)", value: recycledPelletsOutput },
                 { source: "Shredder", target: "Recycling loss", value: recyclingLoss }
             ];
 
@@ -418,14 +547,13 @@
             };
 
             filteredData.nodes.forEach(node => {
-                const incoming = filteredData.links.filter(l => l.target === node.name).reduce((sum, l) => sum + l.value, 0);
-                const outgoing = filteredData.links.filter(l => l.source === node.name).reduce((sum, l) => sum + l.value, 0);
+                const incoming = filteredData.links.filter(l => l.target.name === node.name).reduce((sum, l) => sum + l.value, 0);
+                const outgoing = filteredData.links.filter(l => l.source.name === node.name).reduce((sum, l) => sum + l.value, 0);
                 node.value = Math.max(incoming, outgoing);
             });
 
 
             drawSankey(filteredData, totalMass, massUnit);
-            checkEdgeCases(params);
         }
 
         // --- Edge Case Detection ---
@@ -434,24 +562,34 @@
 
             if (successRate === 0 && printLossRate === 0 && recyclingLossRate === 0) {
                 showModal("Perfectly circular system", "With no material leaving the system as product or loss, it becomes self-sustaining. It can run on 100% recycled material, requiring no new virgin input.");
-                return;
+                return true;
             }
 
             if (successRate === 100) {
                 showModal("Perfectly linear system", "All material successfully becomes product and exits the system. Since nothing is available for recycling, 100% of the input must be virgin material.");
-                return;
+                return true;
             }
 
             if (printLossRate === 100 || (successRate === 0 && recyclingLossRate === 100)) {
                 showModal("Total system failure", "All material is lost either during printing or recycling. With no material recovered, the system requires 100% virgin material just to replace these losses.");
-                return;
+                return true;
             }
+            return false;
         }
 
         function showModal(title, text) {
             document.getElementById('modal-title').textContent = title;
             document.getElementById('modal-text').textContent = text;
             document.getElementById('modal').classList.add('active');
+        }
+
+        function showValidationMessage(inputElement, message) {
+            const tooltip = inputElement.nextElementSibling;
+            tooltip.textContent = message;
+            tooltip.style.opacity = '1';
+            setTimeout(() => {
+                tooltip.style.opacity = '0';
+            }, 2000);
         }
 
         // --- Event Listeners and Control Logic ---
@@ -466,23 +604,96 @@
             const recyclingLossValueSpan = document.getElementById('recyclingLossRateValue');
             const modal = document.getElementById('modal');
             const modalCloseBtn = document.getElementById('modal-close');
+            const parameterCard = document.getElementById('parameter-card');
+            const flipToLogBtn = document.getElementById('flip-to-log');
+            const flipToSimBtn = document.getElementById('flip-to-sim');
+            const unaccountedMassContainer = document.getElementById('unaccounted-mass-container');
+            const unaccountedMassDisplay = document.getElementById('unaccountedMass');
 
-            function updateVisualization() {
-                const params = {
+            const experimentInputs = [
+                document.getElementById('printedActuatorMass'),
+                document.getElementById('successfulProductMass'),
+                document.getElementById('recycledPelletsOutputMass')
+            ];
+
+            const allNumericInputs = [totalMassInput, ...experimentInputs];
+
+            function getParams() {
+                return {
                     totalMass: parseFloat(totalMassInput.value) || 0,
                     massUnit: massUnitInput.value || 'units',
-                    successRate: parseInt(successRateSlider.value),
-                    printLossRate: parseInt(printLossSlider.value),
-                    recyclingLossRate: parseInt(recyclingLossSlider.value)
+                    successRate: parseFloat(successRateSlider.value),
+                    printLossRate: parseFloat(printLossSlider.value),
+                    recyclingLossRate: parseFloat(recyclingLossSlider.value)
                 };
-                calculateAndDraw(params);
+            }
+
+            function calculateFromExperiment() {
+                const initialMass = parseFloat(totalMassInput.value) || 0;
+                const printedMass = parseFloat(experimentInputs[0].value) || 0;
+                const successfulMass = parseFloat(experimentInputs[1].value) || 0;
+                const recycledMass = parseFloat(experimentInputs[2].value) || 0;
+                const massUnit = massUnitInput.value || 'units';
+
+                unaccountedMassDisplay.textContent = `0.0 ${massUnit}`;
+
+                if (initialMass <= 0) return;
+
+                const unaccountedMass = (printedMass + successfulMass + recycledMass) - initialMass;
+
+                if (printedMass > initialMass) {
+                    showModal("Input Error", "The 'Printed actuator mass' cannot be greater than the 'Initial input mass'. Please check your numbers.");
+                    return;
+                }
+                if (successfulMass > printedMass) {
+                    showModal("Input Error", "The 'Successful product mass' cannot be greater than the 'Printed actuator mass'. Please check your numbers.");
+                    return;
+                }
+                if (recycledMass > (printedMass - successfulMass)) {
+                    showModal("Input Error", "The 'Recycled pellets mass' cannot be greater than the mass of failed parts. Please check your numbers.");
+                    return;
+                }
+
+
+                // Calculate Print Loss
+                const printLoss = initialMass - printedMass;
+                const printLossRate = initialMass > 0 ? (printLoss / initialMass * 100) : 0;
+
+                // Calculate Success Rate
+                const successRate = printedMass > 0 ? (successfulMass / printedMass * 100) : 0;
+
+                // Calculate Recycling Loss / Unaccounted Mass
+                const failedMass = printedMass - successfulMass;
+                const recyclingLoss = failedMass - recycledMass;
+                unaccountedMassDisplay.textContent = `${recyclingLoss.toFixed(1)} ${massUnit}`;
+
+                const recyclingLossRate = failedMass > 0 ? (recyclingLoss / failedMass * 100) : 0;
+
+                // Update sliders
+                successRateSlider.value = successRate;
+                successRateValueSpan.textContent = `${successRate.toFixed(1)}%`;
+                printLossSlider.value = printLossRate;
+                printLossValueSpan.textContent = `${printLossRate.toFixed(1)}%`;
+                recyclingLossSlider.value = recyclingLossRate;
+                recyclingLossValueSpan.textContent = `${recyclingLossRate.toFixed(1)}%`;
+
+                calculateAndDraw(getParams());
+
+                const allInputsFilled = experimentInputs.every(input => input.value !== '');
+                if (allInputsFilled && Math.abs(recyclingLoss) < 0.01) {
+                    checkEdgeCases(getParams());
+                }
             }
 
             function setupSlider(slider, valueSpan) {
                 slider.addEventListener('input', (event) => {
-                    const value = event.target.value;
-                    valueSpan.textContent = `${value}%`;
-                    updateVisualization();
+                    const value = parseFloat(event.target.value);
+                    valueSpan.textContent = `${value.toFixed(1)}%`;
+                    experimentInputs.forEach(input => input.value = '');
+                    unaccountedMassContainer.classList.add('hidden');
+                    const params = getParams();
+                    calculateAndDraw(params);
+                    checkEdgeCases(params);
                 });
             }
 
@@ -490,8 +701,34 @@
             setupSlider(printLossSlider, printLossValueSpan);
             setupSlider(recyclingLossSlider, recyclingLossValueSpan);
 
-            totalMassInput.addEventListener('input', updateVisualization);
-            massUnitInput.addEventListener('input', updateVisualization);
+            allNumericInputs.forEach(input => {
+                input.addEventListener('input', () => {
+                    if (parseFloat(input.value) < 0) {
+                        showValidationMessage(input, "Positive numbers only");
+                        input.value = 0;
+                    }
+                    if (parameterCard.classList.contains('is-flipped')) {
+                        calculateFromExperiment();
+                    } else {
+                        calculateAndDraw(getParams());
+                    }
+                });
+            });
+
+            massUnitInput.addEventListener('input', () => calculateAndDraw(getParams()));
+
+            experimentInputs.forEach(input => {
+                input.addEventListener('input', calculateFromExperiment);
+            });
+
+            flipToLogBtn.addEventListener('click', () => {
+                parameterCard.classList.add('is-flipped');
+                unaccountedMassContainer.classList.remove('hidden');
+            });
+            flipToSimBtn.addEventListener('click', () => {
+                parameterCard.classList.remove('is-flipped');
+                unaccountedMassContainer.classList.add('hidden');
+            });
 
             modalCloseBtn.addEventListener('click', () => modal.classList.remove('active'));
             modal.addEventListener('click', (event) => {
@@ -500,8 +737,8 @@
                 }
             });
 
-            updateVisualization();
-            window.addEventListener('resize', updateVisualization);
+            calculateAndDraw(getParams());
+            window.addEventListener('resize', () => calculateAndDraw(getParams()));
         });
     </script>
 </body>
