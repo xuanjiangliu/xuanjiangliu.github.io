@@ -163,23 +163,16 @@
                 <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg lg:col-span-1 dashboard-panel">
                     <label class="block text-sm font-medium text-gray-700 mb-2 font-bold">Initial input mass</label>
                     <p class="text-xs text-gray-500 mb-4">Define the starting mass and unit for the simulation.</p>
-                    <div class="flex items-center space-x-4 relative">
+                    <div class="flex items-center space-x-4">
                         <div class="flex-grow">
                             <label for="totalMass" class="text-xs text-gray-600">Mass</label>
                             <input type="number" id="totalMass" value="100.0" step="0.1" min="0"
                                 class="w-full mt-1 p-2 border rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
-                            <div class="validation-tooltip">Positive numbers only</div>
                         </div>
                         <div class="w-1/3">
                             <label for="massUnit" class="text-xs text-gray-600">Unit</label>
                             <input type="text" id="massUnit" value="g"
                                 class="w-full mt-1 p-2 border rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
-                        </div>
-                    </div>
-                    <div id="unaccounted-mass-container" class="mt-4 hidden">
-                        <label for="unaccountedMass" class="block text-xs font-medium text-gray-700">Unaccounted
-                            mass</label>
-                        <div id="unaccountedMass" class="w-full mt-1 p-2 text-sm bg-yellow-100 border rounded-md">0.0 g
                         </div>
                     </div>
                 </div>
@@ -258,31 +251,77 @@
                                     </svg>
                                 </button>
                             </div>
-                            <div class="space-y-4 mt-2">
-                                <div class="relative">
-                                    <label for="printedActuatorMass"
-                                        class="block text-sm font-medium text-gray-700">Printed actuator mass</label>
-                                    <input type="number" id="printedActuatorMass" placeholder="e.g., 90.0" step="0.1"
-                                        min="0"
-                                        class="w-full mt-1 p-2 text-sm border rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
-                                    <div class="validation-tooltip">Positive numbers only</div>
+                            <div class="space-y-4">
+                                <!-- Top Row: Inputs -->
+                                <div class="flex items-start justify-around space-x-4">
+                                    <!-- Step 1 -->
+                                    <div id="exp-step-1" class="flex-1 relative">
+                                        <div class="p-2 rounded-t-md" style="background-color: #dae8fc;">
+                                            <label for="printedActuatorMass"
+                                                class="block text-xs font-medium text-gray-700">Printed actuator
+                                                mass</label>
+                                        </div>
+                                        <input type="number" id="printedActuatorMass" placeholder="e.g., 90.0"
+                                            step="0.1" min="0"
+                                            class="w-full p-2 text-sm border-t-0 border rounded-b-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                                    </div>
+                                    <div id="arrow-1" class="text-gray-400 pt-8 hidden">&rarr;</div>
+                                    <!-- Step 2 -->
+                                    <div id="exp-step-2" class="flex-1 relative hidden">
+                                        <div class="p-2 rounded-t-md" style="background-color: #e6f7ff;">
+                                            <label for="successfulProductMass"
+                                                class="block text-xs font-medium text-gray-700">Successful product
+                                                mass</label>
+                                        </div>
+                                        <input type="number" id="successfulProductMass" placeholder="e.g., 72.0"
+                                            step="0.1" min="0"
+                                            class="w-full p-2 text-sm border-t-0 border rounded-b-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                                    </div>
+                                    <div id="arrow-2" class="text-gray-400 pt-8 hidden">&rarr;</div>
+                                    <!-- Step 3 -->
+                                    <div id="exp-step-3" class="flex-1 relative hidden">
+                                        <div class="p-2 rounded-t-md" style="background-color: #dcfce7;">
+                                            <label for="recycledPelletsOutputMass"
+                                                class="block text-xs font-medium text-gray-700">Recycled pellets
+                                                mass</label>
+                                        </div>
+                                        <input type="number" id="recycledPelletsOutputMass" placeholder="e.g., 16.2"
+                                            step="0.1" min="0"
+                                            class="w-full p-2 text-sm border-t-0 border rounded-b-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                                    </div>
                                 </div>
-                                <div class="relative">
-                                    <label for="successfulProductMass"
-                                        class="block text-sm font-medium text-gray-700">Successful product mass</label>
-                                    <input type="number" id="successfulProductMass" placeholder="e.g., 72.0" step="0.1"
-                                        min="0"
-                                        class="w-full mt-1 p-2 text-sm border rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
-                                    <div class="validation-tooltip">Positive numbers only</div>
-                                </div>
-                                <div class="relative">
-                                    <label for="recycledPelletsOutputMass"
-                                        class="block text-sm font-medium text-gray-700">Recycled pellets (output)
-                                        mass</label>
-                                    <input type="number" id="recycledPelletsOutputMass" placeholder="e.g., 16.2"
-                                        step="0.1" min="0"
-                                        class="w-full mt-1 p-2 text-sm border rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
-                                    <div class="validation-tooltip">Positive numbers only</div>
+                                <!-- Bottom Row: Calculations -->
+                                <div class="flex items-start justify-around space-x-4">
+                                    <div id="calc-step-1" class="flex-1 text-center hidden">
+                                        <div class="flex items-center justify-center text-gray-400 text-2xl">
+                                            <span class="mr-2">↳</span>
+                                            <div
+                                                class="p-2 rounded-md text-xs bg-gray-200 border border-gray-300 flex-grow">
+                                                <div class="font-bold">Print Loss</div>
+                                                <div id="calc-print-loss"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="calc-step-2" class="flex-1 text-center hidden">
+                                        <div class="flex items-center justify-center text-gray-400 text-2xl">
+                                            <span class="mr-2">↳</span>
+                                            <div class="p-2 rounded-md text-xs flex-grow"
+                                                style="background-color: #ffe6cc; border: 1px solid #fed7aa;">
+                                                <div class="font-bold">Failed Parts</div>
+                                                <div id="calc-failed-parts"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="calc-step-3" class="flex-1 text-center hidden">
+                                        <div class="flex items-center justify-center text-gray-400 text-2xl">
+                                            <span class="mr-2">↳</span>
+                                            <div
+                                                class="p-2 rounded-md text-xs bg-gray-200 border border-gray-300 flex-grow">
+                                                <div class="font-bold">Recycling Loss</div>
+                                                <div id="calc-recycling-loss"></div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -298,17 +337,17 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <!-- Material Composition Display -->
                 <div class="p-4 bg-green-50 border border-green-200 rounded-lg">
-                    <label class="block text-sm font-medium text-gray-700 mb-2 font-bold">Required input
-                        composition</label>
+                    <label class="block text-sm font-medium text-gray-700 mb-2 font-bold">Required Input
+                        Composition</label>
                     <p class="text-xs text-gray-500 mb-4">The calculated material mix needed to sustain the process
                         based on losses.</p>
                     <div class="flex items-center space-x-4 text-center">
                         <div class="flex-1">
-                            <div class="text-sm text-gray-600">Virgin material</div>
+                            <div class="text-sm text-gray-600">Virgin Material</div>
                             <div id="virginRateDisplay" class="text-lg font-bold text-gray-800 mt-1"></div>
                         </div>
                         <div class="flex-1">
-                            <div class="text-sm text-gray-600">Recycled pellets</div>
+                            <div class="text-sm text-gray-600">Recycled Pellets</div>
                             <div id="recycledRateDisplay" class="text-lg font-bold text-gray-800 mt-1"></div>
                         </div>
                     </div>
@@ -316,16 +355,16 @@
 
                 <!-- Overall System Yield Display -->
                 <div class="p-4 bg-purple-50 border border-purple-200 rounded-lg">
-                    <label class="block text-sm font-medium text-gray-700 mb-2 font-bold">Overall system yield</label>
+                    <label class="block text-sm font-medium text-gray-700 mb-2 font-bold">Overall System Yield</label>
                     <p class="text-xs text-gray-500 mb-4">The final percentage of material that becomes successful
                         product vs. total loss.</p>
                     <div class="flex items-center space-x-4 text-center">
                         <div class="flex-1">
-                            <div class="text-sm text-gray-600">Successful product</div>
+                            <div class="text-sm text-gray-600">Successful Product</div>
                             <div id="yieldDisplay" class="text-lg font-bold text-gray-800 mt-1"></div>
                         </div>
                         <div class="flex-1">
-                            <div class="text-sm text-gray-600">Total system loss</div>
+                            <div class="text-sm text-gray-600">Total System Loss</div>
                             <div id="lossDisplay" class="text-lg font-bold text-gray-800 mt-1"></div>
                         </div>
                     </div>
@@ -339,7 +378,7 @@
     <!-- Modal for Edge Case Explanations -->
     <div id="modal" class="modal-overlay">
         <div class="modal-content">
-            <h3 id="modal-title" class="text-xl font-bold text-gray-800 mb-3">Edge case detected</h3>
+            <h3 id="modal-title" class="text-xl font-bold text-gray-800 mb-3">Edge Case Detected</h3>
             <p id="modal-text" class="text-gray-600 mb-5">Explanation of the scenario.</p>
             <button id="modal-close"
                 class="w-full bg-blue-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors">Close</button>
@@ -607,8 +646,19 @@
             const parameterCard = document.getElementById('parameter-card');
             const flipToLogBtn = document.getElementById('flip-to-log');
             const flipToSimBtn = document.getElementById('flip-to-sim');
-            const unaccountedMassContainer = document.getElementById('unaccounted-mass-container');
-            const unaccountedMassDisplay = document.getElementById('unaccountedMass');
+
+            const expStep1 = document.getElementById('exp-step-1');
+            const expStep2 = document.getElementById('exp-step-2');
+            const expStep3 = document.getElementById('exp-step-3');
+            const arrow1 = document.getElementById('arrow-1');
+            const arrow2 = document.getElementById('arrow-2');
+
+            const calcStep1 = document.getElementById('calc-step-1');
+            const calcStep2 = document.getElementById('calc-step-2');
+            const calcStep3 = document.getElementById('calc-step-3');
+            const calcPrintLoss = document.getElementById('calc-print-loss');
+            const calcFailedParts = document.getElementById('calc-failed-parts');
+            const calcRecyclingLoss = document.getElementById('calc-recycling-loss');
 
             const experimentInputs = [
                 document.getElementById('printedActuatorMass'),
@@ -630,44 +680,73 @@
 
             function calculateFromExperiment() {
                 const initialMass = parseFloat(totalMassInput.value) || 0;
-                const printedMass = parseFloat(experimentInputs[0].value) || 0;
-                const successfulMass = parseFloat(experimentInputs[1].value) || 0;
-                const recycledMass = parseFloat(experimentInputs[2].value) || 0;
+                const printedMass = parseFloat(experimentInputs[0].value);
+                const successfulMass = parseFloat(experimentInputs[1].value);
+                const recycledMass = parseFloat(experimentInputs[2].value);
                 const massUnit = massUnitInput.value || 'units';
-
-                unaccountedMassDisplay.textContent = `0.0 ${massUnit}`;
 
                 if (initialMass <= 0) return;
 
-                const unaccountedMass = (printedMass + successfulMass + recycledMass) - initialMass;
+                let printLossRate = 0;
+                let successRate = 0;
+                let recyclingLossRate = 0;
 
-                if (printedMass > initialMass) {
-                    showModal("Input Error", "The 'Printed actuator mass' cannot be greater than the 'Initial input mass'. Please check your numbers.");
-                    return;
+                if (isNaN(printedMass)) {
+                    // Reset steps 2 and 3 if step 1 is cleared
+                    expStep2.classList.add('hidden');
+                    expStep3.classList.add('hidden');
+                    arrow1.classList.add('hidden');
+                    arrow2.classList.add('hidden');
+                    calcStep1.classList.add('hidden');
+                    calcStep2.classList.add('hidden');
+                    calcStep3.classList.add('hidden');
+                } else {
+                    if (printedMass > initialMass) {
+                        showModal("Input Error", "The 'Printed actuator mass' cannot be greater than the 'Initial input mass'.");
+                        experimentInputs[0].value = '';
+                        return;
+                    }
+                    const printLoss = initialMass - printedMass;
+                    calcPrintLoss.textContent = `${printLoss.toFixed(1)} ${massUnit}`;
+                    calcStep1.classList.remove('hidden');
+                    printLossRate = initialMass > 0 ? (printLoss / initialMass * 100) : 0;
+                    expStep2.classList.remove('hidden');
+                    arrow1.classList.remove('hidden');
                 }
-                if (successfulMass > printedMass) {
-                    showModal("Input Error", "The 'Successful product mass' cannot be greater than the 'Printed actuator mass'. Please check your numbers.");
-                    return;
+
+                if (isNaN(successfulMass)) {
+                    expStep3.classList.add('hidden');
+                    arrow2.classList.add('hidden');
+                    calcStep2.classList.add('hidden');
+                    calcStep3.classList.add('hidden');
+                } else if (!isNaN(printedMass)) {
+                    if (successfulMass > printedMass) {
+                        showModal("Input Error", "The 'Successful product mass' cannot be greater than the 'Printed actuator mass'.");
+                        experimentInputs[1].value = '';
+                        return;
+                    }
+                    const failedMass = printedMass - successfulMass;
+                    calcFailedParts.textContent = `${failedMass.toFixed(1)} ${massUnit}`;
+                    calcStep2.classList.remove('hidden');
+                    successRate = printedMass > 0 ? (successfulMass / printedMass * 100) : 0;
+                    expStep3.classList.remove('hidden');
+                    arrow2.classList.remove('hidden');
                 }
-                if (recycledMass > (printedMass - successfulMass)) {
-                    showModal("Input Error", "The 'Recycled pellets mass' cannot be greater than the mass of failed parts. Please check your numbers.");
-                    return;
+
+                if (isNaN(recycledMass)) {
+                    calcStep3.classList.add('hidden');
+                } else if (!isNaN(printedMass) && !isNaN(successfulMass)) {
+                    const failedMass = printedMass - successfulMass;
+                    if (recycledMass > failedMass) {
+                        showModal("Input Error", "The 'Recycled pellets mass' cannot be greater than the mass of failed parts.");
+                        experimentInputs[2].value = '';
+                        return;
+                    }
+                    const recyclingLoss = failedMass - recycledMass;
+                    calcRecyclingLoss.textContent = `${recyclingLoss.toFixed(1)} ${massUnit}`;
+                    calcStep3.classList.remove('hidden');
+                    recyclingLossRate = failedMass > 0 ? (recyclingLoss / failedMass * 100) : 0;
                 }
-
-
-                // Calculate Print Loss
-                const printLoss = initialMass - printedMass;
-                const printLossRate = initialMass > 0 ? (printLoss / initialMass * 100) : 0;
-
-                // Calculate Success Rate
-                const successRate = printedMass > 0 ? (successfulMass / printedMass * 100) : 0;
-
-                // Calculate Recycling Loss / Unaccounted Mass
-                const failedMass = printedMass - successfulMass;
-                const recyclingLoss = failedMass - recycledMass;
-                unaccountedMassDisplay.textContent = `${recyclingLoss.toFixed(1)} ${massUnit}`;
-
-                const recyclingLossRate = failedMass > 0 ? (recyclingLoss / failedMass * 100) : 0;
 
                 // Update sliders
                 successRateSlider.value = successRate;
@@ -680,7 +759,7 @@
                 calculateAndDraw(getParams());
 
                 const allInputsFilled = experimentInputs.every(input => input.value !== '');
-                if (allInputsFilled && Math.abs(recyclingLoss) < 0.01) {
+                if (allInputsFilled) {
                     checkEdgeCases(getParams());
                 }
             }
@@ -690,7 +769,13 @@
                     const value = parseFloat(event.target.value);
                     valueSpan.textContent = `${value.toFixed(1)}%`;
                     experimentInputs.forEach(input => input.value = '');
-                    unaccountedMassContainer.classList.add('hidden');
+                    expStep2.classList.add('hidden');
+                    expStep3.classList.add('hidden');
+                    arrow1.classList.add('hidden');
+                    arrow2.classList.add('hidden');
+                    calcStep1.classList.add('hidden');
+                    calcStep2.classList.add('hidden');
+                    calcStep3.classList.add('hidden');
                     const params = getParams();
                     calculateAndDraw(params);
                     checkEdgeCases(params);
@@ -723,11 +808,17 @@
 
             flipToLogBtn.addEventListener('click', () => {
                 parameterCard.classList.add('is-flipped');
-                unaccountedMassContainer.classList.remove('hidden');
             });
             flipToSimBtn.addEventListener('click', () => {
                 parameterCard.classList.remove('is-flipped');
-                unaccountedMassContainer.classList.add('hidden');
+                experimentInputs.forEach(input => input.value = '');
+                expStep2.classList.add('hidden');
+                expStep3.classList.add('hidden');
+                arrow1.classList.add('hidden');
+                arrow2.classList.add('hidden');
+                calcStep1.classList.add('hidden');
+                calcStep2.classList.add('hidden');
+                calcStep3.classList.add('hidden');
             });
 
             modalCloseBtn.addEventListener('click', () => modal.classList.remove('active'));
